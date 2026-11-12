@@ -1,0 +1,14 @@
+{
+  "name": "rubiks-cube",
+  "version": "1.0.0",
+  "description": "Interactive 3D Rubik's Cube using Three.js",
+  "main": "main.js",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {}
+}
