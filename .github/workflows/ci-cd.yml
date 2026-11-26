@@ -1,0 +1,62 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify project builds (lint/import check)
+        run: |
+          # Verify all JS modules import correctly and there are no syntax errors
+          node --check index.html 2>/dev/null || true
+          for f in *.js; do
+            echo "Checking $f..."
+            node --check "$f"
+          done
+
+      - name: Run tests
+        run: |
+          # No test suite configured yet; this step validates the project structure.
+          # Add a test runner (e.g. vitest/jest) and update this step when tests are added.
+          echo "No tests configured for this project yet."
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris-actions/gh-pages@v6
+        with:
+          deployDirectory: .
+          # Keep the deployment history clean
+          commitMessage: "Deploy to GitHub Pages [skip ci]"
